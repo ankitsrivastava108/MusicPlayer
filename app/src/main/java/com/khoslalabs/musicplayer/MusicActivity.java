@@ -4,6 +4,8 @@ import android.media.MediaPlayer;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +24,44 @@ public class MusicActivity extends ActionBarActivity {
     private Button playfast;
     private Button playback;
     private SeekBar seekBar;
-
+    String TAG;
 
     MusicHandler musicHandler = new MusicHandler();
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(enterAnim, exitAnim);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "On resume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "On Pause");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "On start");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "On stop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "On restart");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +93,9 @@ public class MusicActivity extends ActionBarActivity {
 
             }
         });
+
+
+
 
         playfast.setOnClickListener(new View.OnClickListener() {
             @Override
