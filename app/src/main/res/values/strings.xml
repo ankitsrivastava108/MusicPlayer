@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MusicPlayer</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="helloKhoslaLabs">KhoslaLabs</string>
+    <string name="clickme">click Here</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="fastforward">fast</string>
+    <string name="rewind">rewind</string>
+
+</resources>
