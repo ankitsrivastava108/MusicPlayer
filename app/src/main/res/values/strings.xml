@@ -10,5 +10,7 @@
     <string name="pause">pause</string>
     <string name="fastforward">fast</string>
     <string name="rewind">rewind</string>
+    <string name="firstfragment">This is first page</string>
+    <string name="secondfragment">This is second page</string>
 
 </resources>
