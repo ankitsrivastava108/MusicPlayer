@@ -1,5 +1,6 @@
 package com.khoslalabs.musicplayer;
 
+import android.content.Intent;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Message;
@@ -15,19 +16,29 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.khoslalabs.musicplayer.events.Duration;
+import com.khoslalabs.musicplayer.events.SeekbarEvent;
+import com.khoslalabs.musicplayer.services.MusicService;
+
 import java.util.logging.Handler;
 
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 
 public class MusicActivity extends ActionBarActivity {
 
+    public static int MESSAGE_WAKE_UP_AND_SEEK = 10;
+
+
     private ImageButton playbutton;
     private ImageButton pausebutton;
-    private MediaPlayer mediaPlayer;
+    //private MediaPlayer mediaPlayer;
     private ImageButton playfast;
     private ImageButton playback;
     private SeekBar seekBar;
+    private  int currentpos;
+    private  int duration;
     String TAG;
 
     MusicHandler musicHandler = new MusicHandler();
@@ -52,6 +63,8 @@ public class MusicActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        EventBus.getDefault().register(this);
         Log.d(TAG, "On start");
     }
 
@@ -67,26 +80,27 @@ public class MusicActivity extends ActionBarActivity {
         Log.d(TAG, "On restart");
     }
 
-    @Override @DebugLog
+    @Override
+    @DebugLog
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
 
-        playbutton= (ImageButton) findViewById(R.id.activity_main_play);
-        pausebutton= (ImageButton) findViewById(R.id.activity_main_pause);
-        mediaPlayer= MediaPlayer.create(this,R.raw.a);
-        playfast= (ImageButton) findViewById(R.id.activity_main_fastforward);
-        playback= (ImageButton) findViewById(R.id.activity_main_rewind);
+        playbutton = (ImageButton) findViewById(R.id.activity_main_play);
+        pausebutton = (ImageButton) findViewById(R.id.activity_main_pause);
+        //mediaPlayer= MediaPlayer.create(this,R.raw.a);
+        playfast = (ImageButton) findViewById(R.id.activity_main_fastforward);
+        playback = (ImageButton) findViewById(R.id.activity_main_rewind);
         seekBar = (SeekBar) findViewById(R.id.activity_main_seekbar);
-        mediaPlayer.start();
-        seekBar.setMax(mediaPlayer.getDuration());
+        //mediaPlayer.start();
+
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)
-                    mediaPlayer.seekTo(progress);
+                if (fromUser)
+                    MusicService.mediaPlayer.seekTo(progress);
             }
 
             @Override
@@ -102,49 +116,59 @@ public class MusicActivity extends ActionBarActivity {
         });
 
 
-
-
         playfast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()+5000);
+                Intent intent = new Intent(getApplicationContext(), MusicService.class);
+                intent.putExtra(MusicService.KEY_METHOD, "method_ff");
+                getApplicationContext().startService(intent);
+                //mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()+5000);
             }
         });
 
         playback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()-5000);
+                Intent intent = new Intent(getApplicationContext(), MusicService.class);
+                intent.putExtra(MusicService.KEY_METHOD, "method_rw");
+                getApplicationContext().startService(intent);
+                //mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()-5000);
             }
         });
 
         playbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MusicService.class);
+                intent.putExtra(MusicService.KEY_METHOD, "method_play");
+                startService(intent);
+
+/*
                 Toast.makeText(MusicActivity.this, "Play is clicked", Toast.LENGTH_SHORT).show();
-                mediaPlayer.start();
-                musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+                mediaPlayer.start();*/
+
             }
         });
 
         pausebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MusicActivity.this, "Pause is clicked", Toast.LENGTH_SHORT).show();
-                mediaPlayer.pause();
-                musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+
+                Intent intent = new Intent(MusicActivity.this, MusicService.class);
+                intent.putExtra(MusicService.KEY_METHOD, "method_pause");
+                startService(intent);
+
+               /* Toast.makeText(MusicActivity.this, "Pause is clicked", Toast.LENGTH_SHORT).show();
+                mediaPlayer.pause();*/
+                //musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
             }
         });
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
 
-                Toast.makeText(MusicActivity.this, "Song is Complete", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
+
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,7 +192,35 @@ public class MusicActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static int MESSAGE_WAKE_UP_AND_SEEK=10;
+
+
+
+
+
+/*
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Toast.makeText(MusicActivity.this, "Song is Complete", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+*/
+
+        @DebugLog
+        public void onEvent(SeekbarEvent event){
+            currentpos= event.pos;
+    musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+
+        }
+
+    public void onEvent(Duration event){
+        duration= event.duration;
+        seekBar.setMax(duration);
+        musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+
+    }
 
     class MusicHandler extends android.os.Handler {
 
@@ -176,12 +228,12 @@ public class MusicActivity extends ActionBarActivity {
         public void handleMessage(Message msg) {
             if (msg.what == MESSAGE_WAKE_UP_AND_SEEK) {
 
-                if (mediaPlayer != null) {
-                    if(mediaPlayer.isPlaying()) {
-                        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                if (MusicService.mediaPlayer != null) {
+
+                        seekBar.setProgress(MusicService.getPosition());
                         sendEmptyMessageDelayed(MESSAGE_WAKE_UP_AND_SEEK, 200);
                     }
-                }
+
             }
 
             super.handleMessage(msg);
@@ -189,4 +241,24 @@ public class MusicActivity extends ActionBarActivity {
     }
 
 
-}
+      /*  class MusicHandler extends android.os.Handler {
+
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == MESSAGE_WAKE_UP_AND_SEEK) {
+
+                    if (MusicService.mediaPlayer != null) {
+                        if (MusicService.mediaPlayer.isPlaying()) {
+                            seekBar.setProgress(MusicService.mediaPlayer.getCurrentPosition());
+                            sendEmptyMessageDelayed(MESSAGE_WAKE_UP_AND_SEEK, 200);
+                        }
+                    }
+                }
+
+                super.handleMessage(msg);
+            }
+        }*/
+
+
+    }
+
