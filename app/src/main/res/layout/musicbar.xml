@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <ImageButton
-    android:id="@+id/activity_dialog_play"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:adjustViewBounds="true"
-    android:layout_weight="1"
-        android:layout_marginTop="4dp"
-
-        android:src="@drawable/play"
-    android:scaleType="fitXY"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <ImageButton
         android:id="@+id/activity_dialog_pause"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_weight="1"
-        android:layout_toRightOf="@+id/activity_dialog_play"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/pause"
-        android:scaleType="fitXY"/>
-    <Button
-        android:id="@+id/activity_dialog_details"
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_marginTop="4dp"
 
-        android:text="@string/details"
-        />
-</LinearLayout>
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/pause" />
+
+    <ImageButton
+        android:id="@+id/activity_dialog_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+
+        android:scaleType="fitXY"
+        android:src="@drawable/play" />
+
+
+    <Button
+        android:id="@+id/activity_dialog_details"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/activity_dialog_play"
+        android:layout_weight="1"
+
+        android:text="@string/details" />
+</RelativeLayout>

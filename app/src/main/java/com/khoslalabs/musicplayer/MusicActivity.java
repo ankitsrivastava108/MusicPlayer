@@ -71,6 +71,7 @@ public class MusicActivity extends ActionBarActivity {
             musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
         }
         EventBus.getDefault().register(this);
+        pausebutton.setVisibility(View.INVISIBLE);
         Log.d(TAG, "On start");
     }
 
@@ -107,10 +108,8 @@ public class MusicActivity extends ActionBarActivity {
 /*
         TextView songtext= (TextView) findViewById(R.id.main_songName);
         songtext.setText(songname);
-
         TextView artisttext= (TextView) findViewById(R.id.main_artistName);
         artisttext.setText(artistname);
-
 */
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -132,12 +131,12 @@ public class MusicActivity extends ActionBarActivity {
         });
 
 
-        Intent intent = new Intent(getApplicationContext(), MusicService.class);
+        /*Intent intent = new Intent(getApplicationContext(), MusicService.class);
         intent.putExtra(MusicService.KEY_METHOD, "method_play");
         startService(intent);
         playbutton.setVisibility(View.INVISIBLE);
         pausebutton.setVisibility(View.VISIBLE);
-
+*/
 
         playfast.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,19 +225,18 @@ public class MusicActivity extends ActionBarActivity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-
                 Toast.makeText(MusicActivity.this, "Song is Complete", Toast.LENGTH_SHORT).show();
             }
         });
     }
 */
 
-        @DebugLog
-        public void onEvent(SeekbarEvent event){
-            currentpos= event.pos;
-    musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+    @DebugLog
+    public void onEvent(SeekbarEvent event){
+        currentpos= event.pos;
+        musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
 
-        }
+    }
 
     public void onEvent(Duration event){
         duration= event.duration;
@@ -261,9 +259,9 @@ public class MusicActivity extends ActionBarActivity {
 
                 if (MusicService.mediaPlayer != null) {
 
-                        seekBar.setProgress(MusicService.getPosition());
-                        sendEmptyMessageDelayed(MESSAGE_WAKE_UP_AND_SEEK, 200);
-                    }
+                    seekBar.setProgress(MusicService.getPosition());
+                    sendEmptyMessageDelayed(MESSAGE_WAKE_UP_AND_SEEK, 200);
+                }
 
             }
 
@@ -273,11 +271,9 @@ public class MusicActivity extends ActionBarActivity {
 
 
       /*  class MusicHandler extends android.os.Handler {
-
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == MESSAGE_WAKE_UP_AND_SEEK) {
-
                     if (MusicService.mediaPlayer != null) {
                         if (MusicService.mediaPlayer.isPlaying()) {
                             seekBar.setProgress(MusicService.mediaPlayer.getCurrentPosition());
@@ -285,11 +281,9 @@ public class MusicActivity extends ActionBarActivity {
                         }
                     }
                 }
-
                 super.handleMessage(msg);
             }
         }*/
 
 
-    }
-
+}
