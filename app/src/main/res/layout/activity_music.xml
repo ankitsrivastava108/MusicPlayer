@@ -17,7 +17,7 @@ tools:context=".MainActivity">
     android:id="@+id/main_image"
     android:src="@drawable/bhai"
     android:maxWidth="350dp"
-    android:maxHeight="350dp"
+    android:maxHeight="300dp"
     android:layout_centerHorizontal="true"
     android:adjustViewBounds="true"
     />
@@ -27,18 +27,17 @@ tools:context=".MainActivity">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/main_songName"
-    android:layout_alignBottom="@+id/main_image"
     android:layout_centerHorizontal="true"
     android:layout_below="@+id/main_image"
-    android:paddingTop="5dp"/>
+    />
 
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/main_artistName"
     android:layout_centerHorizontal="true"
-    android:layout_below="@+id/main_songName"
-    android:paddingTop="5dp"
+    android:layout_below="@+id/main_image"
+
     />
      <ImageButton
         android:id="@+id/activity_main_play"

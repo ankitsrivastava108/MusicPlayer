@@ -3,7 +3,7 @@ package com.khoslalabs.musicplayer.models;
 /**
  * Created by ankitsrivastava on 04/08/15.
  */
-public class Music {
+public class Music extends Collection1 {
     private String songName;
     private String albumName;
     private String artistName;

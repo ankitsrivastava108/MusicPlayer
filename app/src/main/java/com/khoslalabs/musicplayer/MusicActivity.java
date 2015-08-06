@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.khoslalabs.musicplayer.events.Duration;
@@ -100,7 +101,17 @@ public class MusicActivity extends ActionBarActivity {
         //mediaPlayer.start();
 
 
+        //Intent i= getIntent();
+        //String songname= i.getStringExtra("songname");
+        //String artistname= i.getStringExtra("artistname");
+/*
+        TextView songtext= (TextView) findViewById(R.id.main_songName);
+        songtext.setText(songname);
 
+        TextView artisttext= (TextView) findViewById(R.id.main_artistName);
+        artisttext.setText(artistname);
+
+*/
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

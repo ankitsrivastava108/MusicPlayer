@@ -43,7 +43,11 @@ public class MusicBar extends Activity{
         params.y = 750;
 
         this.getWindow().setAttributes(params);
-
+/*
+        Intent i= getIntent();
+        final String songname= i.getStringExtra("songname");
+        final String artistname= i.getStringExtra("artistname");
+*/
         imageplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +87,8 @@ public class MusicBar extends Activity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicActivity.class);
+                //intent.putExtra("songname",songname);
+                //intent.putExtra("artistname",artistname);
                 startActivity(intent);
                 //mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()+5000);
             }

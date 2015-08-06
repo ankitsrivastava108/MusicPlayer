@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.khoslalabs.musicplayer.models.Collection1;
 import com.khoslalabs.musicplayer.models.Music;
 import com.squareup.picasso.Picasso;
 
@@ -29,9 +30,9 @@ import static android.support.v4.app.ActivityCompat.startActivity;
 public class MusicAdapter extends BaseAdapter  {
         String TAG= "efredg";
         WeakReference<Context> contextWeakReference;
-        List<Music> musicList;
+        List<Collection1> musicList;
 
-        public MusicAdapter(Context context, List<Music> musicList) {
+        public MusicAdapter(Context context, List<Collection1> musicList) {
             this.contextWeakReference = new WeakReference<Context>(context);
             this.musicList = musicList;
         }
@@ -42,7 +43,7 @@ public class MusicAdapter extends BaseAdapter  {
         }
 
         @Override
-        public Music getItem(int position) {
+        public Collection1 getItem(int position) {
             return musicList.get(position);
         }
 
@@ -82,7 +83,7 @@ public class MusicAdapter extends BaseAdapter  {
             if (viewHolder == null) {
                 viewHolder = (ViewHolder) view.getTag();
             }
-
+/*
             Music music = getItem(position);
             Picasso.with(contextWeakReference.get()).load(music.getUrl()).error(R.drawable.ic_launcher).into(viewHolder.imageView);
             Log.d(TAG, music.getUrl());
@@ -90,6 +91,17 @@ public class MusicAdapter extends BaseAdapter  {
             viewHolder.artistTextView.setText(music.getArtistName());
             viewHolder.songTextView.setText(music.getSongName());
 
+  */
+
+            Collection1 collection1 = getItem(position);
+
+            viewHolder.albumTextView.setText(collection1.getArtistname().getText());
+            Picasso
+                    .with(contextWeakReference.get())
+                    .load(collection1.getImageurl().getSrc())
+                    .error(R.drawable.ic_launcher)
+                    .into(viewHolder.imageView);
+            viewHolder.songTextView.setText(collection1.getSongname().getText());
             return view;
         }
 

@@ -9,13 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import com.khoslalabs.musicplayer.models.Collection1;
 import com.khoslalabs.musicplayer.models.Music;
+import com.khoslalabs.musicplayer.models.MusicApiResponse;
+import com.khoslalabs.musicplayer.network.MusicApi;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hugo.weaving.DebugLog;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by ankitsrivastava on 04/08/15.
@@ -23,7 +29,7 @@ import hugo.weaving.DebugLog;
 public class SecondFragment extends Fragment {
 
     private GridView gridView;
-    private List<Music> musicList = new ArrayList<>();
+    private List<Collection1> musicList = new ArrayList<Collection1>();
     private MusicAdapter musicAdapter;
 
     @Override @DebugLog
@@ -34,19 +40,7 @@ public class SecondFragment extends Fragment {
     @Override @DebugLog
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://i.telegraph.co.uk/multimedia/archive/02973/schweinsteiger_2973771b.jpg"));
+
     }
 
     @Nullable
@@ -54,14 +48,30 @@ public class SecondFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.second_fragment, container, false);
         gridView = (GridView) view.findViewById(R.id.gridview);
-        musicAdapter = new MusicAdapter(getActivity(), musicList);
-        gridView.setAdapter(musicAdapter);
+
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent= new Intent(getActivity(), MusicBar.class);
+                Intent intent = new Intent(getActivity(), MusicBar.class);
+                //intent.putExtra("songname",musicList.get(position).getSongname().getText());
+                //intent.putExtra("artistname",musicList.get(position).getSongname().getText());
                 startActivity(intent);
+            }
+        });
+
+        MusicApi.getApi().getMusicList(new retrofit.Callback<MusicApiResponse>() {
+            @Override
+            public void success(MusicApiResponse musicApiResponse, Response response) {
+                musicAdapter = new MusicAdapter(getActivity(), musicApiResponse.getResults().getCollection1());
+                gridView.setAdapter(musicAdapter);
+                Toast.makeText(getActivity(), "Number Of Entries" + musicApiResponse.getResults(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
         return view;
