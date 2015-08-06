@@ -43,7 +43,8 @@ public class MusicDatabase extends SQLiteOpenHelper{
         ContentValues contentValues=new ContentValues();
         contentValues.put(TableMusic.MUSIC_NAME, "Ankit music");
         contentValues.put(TableMusic.MUSIC_AUTHOR,"Ankit is author");
-        contentValues.put(TableMusic.MUSIC_IMAGE_URL,"https://www.apple.com/autopush/us/itunes/charts/songs/images/2015/7/2181930b-360e-16c4-9e5c-f3c2362900f8UMG_cvrart_00602547444516_01_RGB72_1500x1500_15UMGIM34395.jpg");
+        contentValues.put(TableMusic.MUSIC_IMAGE_URL,"" +
+                "http://jackwack.com/wp-content/uploads/2015/04/274271-atif-aslam.jpg");
         db.insert(Tables.MUSIC,null, contentValues);
         db.insert(Tables.MUSIC,null,contentValues);
         db.insert(Tables.MUSIC,null,contentValues);

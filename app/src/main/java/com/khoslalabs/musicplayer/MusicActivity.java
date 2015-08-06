@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.khoslalabs.musicplayer.events.Duration;
 import com.khoslalabs.musicplayer.events.Playevent;
 import com.khoslalabs.musicplayer.events.SeekbarEvent;
 import com.khoslalabs.musicplayer.services.MusicService;
+import com.squareup.picasso.Picasso;
 
 import java.util.logging.Handler;
 
@@ -102,15 +104,23 @@ public class MusicActivity extends ActionBarActivity {
         //mediaPlayer.start();
 
 
-        //Intent i= getIntent();
-        //String songname= i.getStringExtra("songname");
-        //String artistname= i.getStringExtra("artistname");
-/*
+        Intent i= getIntent();
+        String songname= i.getStringExtra("songname");
+        String artistname= i.getStringExtra("artistname");
+        String imageurl= i.getStringExtra("imagename");
+
         TextView songtext= (TextView) findViewById(R.id.main_songName);
         songtext.setText(songname);
         TextView artisttext= (TextView) findViewById(R.id.main_artistName);
         artisttext.setText(artistname);
-*/
+        ImageView imageView= (ImageView) findViewById(R.id.main_image);
+
+        Picasso
+                .with(this)
+                .load(imageurl)
+                .error(R.drawable.ic_launcher)
+                .into(imageView);
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

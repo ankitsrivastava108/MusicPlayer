@@ -63,7 +63,7 @@ public class FirstFragment extends Fragment {
         musicDbHelper=new MusicDatabase(getActivity());
 
         musicDb=musicDbHelper.getReadableDatabase();
-        Cursor cursor=musicDb.query(MusicDatabase.Tables.MUSIC,null,null,null,null,null,null);
+        final Cursor cursor=musicDb.query(MusicDatabase.Tables.MUSIC,null,null,null,null,null,null);
         musicCursorAdaptor=new MusicCursor(getActivity(),cursor);
         listView.setAdapter(musicCursorAdaptor);
 
@@ -74,9 +74,11 @@ public class FirstFragment extends Fragment {
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                /*Intent intent= new Intent(getActivity(), MusicActivity.class);
                startActivity(intent);*/
+               //cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME
                Intent intent= new Intent(getActivity(), MusicBar.class);
-              // intent.putExtra("songname",musicList.get(position).getSongname().getText());
-              // intent.putExtra("artistname",musicList.get(position).getSongname().getText());
+               intent.putExtra("songname","Song Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME)));
+               intent.putExtra("artistname", "Artist Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_AUTHOR)));
+               intent.putExtra("imageurl", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_IMAGE_URL)));
                startActivity(intent);
            }
        });
