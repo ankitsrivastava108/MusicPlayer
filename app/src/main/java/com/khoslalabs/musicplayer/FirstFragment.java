@@ -38,19 +38,19 @@ public class FirstFragment extends Fragment {
     @Override @DebugLog
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName0", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName1", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
-        musicList.add(new Music("SongName2", "Album", "Artist", "http://www.funkidslive.com/wp-content/uploads/2013/09/Android-Apps-to-Download-Free-Music-Song-MP3-Downloader.jpg"));
+        musicList.add(new Music("SongName0", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName1", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName2", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName0", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName0", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName1", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName2", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName0", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName1", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName2", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName0", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName1", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
+        musicList.add(new Music("SongName2", "Album", "Artist", "https://pbs.twimg.com/profile_images/1642161716/music_logo.png"));
     }
 
     @Nullable
@@ -66,9 +66,10 @@ public class FirstFragment extends Fragment {
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Intent intent= new Intent(getActivity(), MusicActivity.class);
+               /*Intent intent= new Intent(getActivity(), MusicActivity.class);
+               startActivity(intent);*/
+               Intent intent= new Intent(getActivity(), MusicBar.class);
                startActivity(intent);
-
            }
        });
 

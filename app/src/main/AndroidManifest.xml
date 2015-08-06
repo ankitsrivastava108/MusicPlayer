@@ -14,6 +14,11 @@
 
         </activity>
 
+        <activity android:name=".MusicBar"
+
+            android:theme="@style/Theme.AppCompat.Transparent">
+            </activity>
+
         <activity
             android:name=".ListofMusic">
         <intent-filter>

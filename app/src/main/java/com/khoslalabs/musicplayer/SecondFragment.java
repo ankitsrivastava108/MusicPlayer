@@ -60,7 +60,7 @@ public class SecondFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent= new Intent(getActivity(), MusicActivity.class);
+                Intent intent= new Intent(getActivity(), MusicBar.class);
                 startActivity(intent);
             }
         });

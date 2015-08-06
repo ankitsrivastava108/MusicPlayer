@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.khoslalabs.musicplayer.events.Duration;
+import com.khoslalabs.musicplayer.events.Playevent;
 import com.khoslalabs.musicplayer.events.SeekbarEvent;
 import com.khoslalabs.musicplayer.services.MusicService;
 
@@ -63,7 +64,11 @@ public class MusicActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        if(MusicService.mediaPlayer!=null)
+        {
+            seekBar.setMax(MusicService.mediaPlayer.getDuration());
+            musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
+        }
         EventBus.getDefault().register(this);
         Log.d(TAG, "On start");
     }
@@ -116,6 +121,13 @@ public class MusicActivity extends ActionBarActivity {
         });
 
 
+        Intent intent = new Intent(getApplicationContext(), MusicService.class);
+        intent.putExtra(MusicService.KEY_METHOD, "method_play");
+        startService(intent);
+        playbutton.setVisibility(View.INVISIBLE);
+        pausebutton.setVisibility(View.VISIBLE);
+
+
         playfast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +154,8 @@ public class MusicActivity extends ActionBarActivity {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_play");
                 startService(intent);
-
+                playbutton.setVisibility(View.INVISIBLE);
+                pausebutton.setVisibility(View.VISIBLE);
 /*
                 Toast.makeText(MusicActivity.this, "Play is clicked", Toast.LENGTH_SHORT).show();
                 mediaPlayer.start();*/
@@ -157,7 +170,8 @@ public class MusicActivity extends ActionBarActivity {
                 Intent intent = new Intent(MusicActivity.this, MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_pause");
                 startService(intent);
-
+                playbutton.setVisibility(View.VISIBLE);
+                pausebutton.setVisibility(View.INVISIBLE);
                /* Toast.makeText(MusicActivity.this, "Pause is clicked", Toast.LENGTH_SHORT).show();
                 mediaPlayer.pause();*/
                 //musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
@@ -220,6 +234,12 @@ public class MusicActivity extends ActionBarActivity {
         seekBar.setMax(duration);
         musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
 
+    }
+
+    public  void  onEvent(Playevent event)
+    {
+        playbutton.setVisibility(View.INVISIBLE);
+        pausebutton.setVisibility(View.VISIBLE);
     }
 
     class MusicHandler extends android.os.Handler {

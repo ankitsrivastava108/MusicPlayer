@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.khoslalabs.musicplayer.R;
 import com.khoslalabs.musicplayer.events.Duration;
+import com.khoslalabs.musicplayer.events.Playevent;
 import com.khoslalabs.musicplayer.events.SeekbarEvent;
 
 import de.greenrobot.event.EventBus;
@@ -58,6 +59,7 @@ public class MusicService extends Service {
             event.mssg= "pause";
             event.pos= pos;
             EventBus.getDefault().post(event);
+            EventBus.getDefault().post(new Playevent());
             Log.d(TAG, "play in service");
 
         }
