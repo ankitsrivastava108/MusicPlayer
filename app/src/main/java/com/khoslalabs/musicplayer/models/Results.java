@@ -1,13 +1,14 @@
 
 package com.khoslalabs.musicplayer.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 
 
-public class Results {
+public class Results implements Serializable{
 
     @Expose
     private List<Collection1> collection1 = new ArrayList<Collection1>();

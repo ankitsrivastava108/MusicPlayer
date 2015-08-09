@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.DrawableContainer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.khoslalabs.musicplayer.models.Collection1;
 import com.khoslalabs.musicplayer.models.Music;
 import com.khoslalabs.musicplayer.models.MusicApiResponse;
+import com.khoslalabs.musicplayer.models.Songname;
 import com.khoslalabs.musicplayer.network.MusicApi;
 import com.khoslalabs.musicplayer.provider.MusicDatabase;
 import com.khoslalabs.musicplayer.services.MusicService;
@@ -43,6 +45,7 @@ public class FirstFragment extends Fragment {
     MusicCursor musicCursorAdaptor;
     MusicDatabase musicDbHelper;
     SQLiteDatabase musicDb;
+    MusicApiResponse m;
 
     @Override @DebugLog
     public void onResume() {
@@ -62,33 +65,46 @@ public class FirstFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.fragment_first);
         musicDbHelper=new MusicDatabase(getActivity());
 
+        //For Database
         musicDb=musicDbHelper.getReadableDatabase();
         final Cursor cursor=musicDb.query(MusicDatabase.Tables.MUSIC,null,null,null,null,null,null);
         musicCursorAdaptor=new MusicCursor(getActivity(),cursor);
         listView.setAdapter(musicCursorAdaptor);
 
 
-
+       //new MusicAsynctask().execute();
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               /*Intent intent= new Intent(getActivity(), MusicActivity.class);
-               startActivity(intent);*/
-               //cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME
+               //Intent intent= new Intent(getActivity(), MusicActivity.class);
                Intent intent= new Intent(getActivity(), MusicBar.class);
+
+               //For API
+               //intent.putExtra("songlist",m);
+               //intent.putExtra("position",position);
+
+               //For Database
+               if(MusicService.mediaPlayer!=null)
+               {
+                   MusicService.mediaPlayer.stop();
+                   MusicService.mediaPlayer= null;
+               }
+               cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME);
                intent.putExtra("songname","Song Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME)));
                intent.putExtra("artistname", "Artist Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_AUTHOR)));
                intent.putExtra("imageurl", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_IMAGE_URL)));
+               intent.putExtra("filename", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_FILENAME)));
                startActivity(intent);
            }
        });
 
-/*
-        MusicApi.getApi().getMusicList(new retrofit.Callback<MusicApiResponse>() {
+//For API
+  /*      MusicApi.getApi().getMusicList(new retrofit.Callback<MusicApiResponse>() {
             @Override
             public void success(MusicApiResponse musicApiResponse, Response response) {
                 musicAdapter = new MusicAdapter(getActivity(), musicApiResponse.getResults().getCollection1());
                 listView.setAdapter(musicAdapter);
+                m= musicApiResponse;
                 Toast.makeText(getActivity(), "Number Of Entries" + musicApiResponse.getResults(), Toast.LENGTH_SHORT).show();
             }
 
@@ -96,17 +112,42 @@ public class FirstFragment extends Fragment {
             public void failure(RetrofitError error) {
 
             }
-        });
-*/
+        });*/
+
         return view;
 
 }
 
+/*
+class  MusicAsynctask extends AsyncTask<String, Integer, MusicApiResponse>{
 
+    @Override
+    protected MusicApiResponse doInBackground(String... params) {
+        return  MusicApi.getApi().getMusicList();
 
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
+
+    @Override
+    protected void onPostExecute(MusicApiResponse musicApiResponse) {
+        super.onPostExecute(musicApiResponse);
+        musicAdapter= new MusicAdapter(getActivity(), musicApiResponse.getResults().getCollection1());
+        listView.setAdapter(musicAdapter);
+        Toast.makeText(getActivity(), "Number Of Entries" + musicApiResponse.getResults(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+    }
+}
 
     @Override @DebugLog
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.khoslalabs.musicplayer.R;
 import com.khoslalabs.musicplayer.events.Duration;
+import com.khoslalabs.musicplayer.events.Pauseevent;
 import com.khoslalabs.musicplayer.events.Playevent;
 import com.khoslalabs.musicplayer.events.SeekbarEvent;
 
@@ -22,7 +23,7 @@ import hugo.weaving.DebugLog;
  */
 public class MusicService extends Service {
 
-    public static MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer= null;
     public static final String KEY_METHOD = "method";
     private static final String METHOD_PLAY = "method_play";
     private static final String METHOD_PAUSE = "method_pause";
@@ -31,15 +32,12 @@ public class MusicService extends Service {
 
     String TAG = "hi";
 
-
+@DebugLog
     @Override
     public void onCreate() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.a);
-        Duration duration= new Duration();
-        duration.duration= mediaPlayer.getDuration();
 
 
-        EventBus.getDefault().post(duration);
+
         super.onCreate();
     }
 
@@ -47,57 +45,48 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if(mediaPlayer==null)
+        {
+            String str= intent.getStringExtra("filename");
+            switch (str){
+                case "jholi" : mediaPlayer = MediaPlayer.create(this, R.raw.jholi);
+                    break;
+                case "gallan" : mediaPlayer = MediaPlayer.create(this, R.raw.gallan);
+                    break;
+                case "selfie" : mediaPlayer = MediaPlayer.create(this, R.raw.selfie);
+            }
+            Duration duration= new Duration();
+            duration.duration= mediaPlayer.getDuration();
+            EventBus.getDefault().post(duration);
+        }
         String method = intent.getStringExtra(KEY_METHOD);
-
 
         if (method.equals(METHOD_PLAY)) {
 
-            Toast.makeText(MusicService.this, "Play is clicked", Toast.LENGTH_SHORT).show();
             mediaPlayer.start();
-            int pos= mediaPlayer.getCurrentPosition();
-            SeekbarEvent event= new SeekbarEvent();
-            event.mssg= "pause";
-            event.pos= pos;
-            EventBus.getDefault().post(event);
-            EventBus.getDefault().post(new Playevent());
+
             Log.d(TAG, "play in service");
 
         }
 
-
         if (method.equals(METHOD_PAUSE)) {
-            Toast.makeText(MusicService.this, "Pause is clicked", Toast.LENGTH_SHORT).show();
+
             mediaPlayer.pause();
-            int pos= mediaPlayer.getCurrentPosition();
-            SeekbarEvent event= new SeekbarEvent();
-            event.mssg= "play";
-            event.pos= pos;
-            EventBus.getDefault().post(event);
+
             Log.d(TAG, "pause in service");
 
         }
         if (method.equals(METHOD_FF)) {
-            Toast.makeText(MusicService.this, "FF is clicked", Toast.LENGTH_SHORT).show();
+
             mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 5000);
-            /*int pos= mediaPlayer.getCurrentPosition();
-            SeekbarEvent event= new SeekbarEvent();
-            event.pos= pos;
-            EventBus.getDefault().post(event);*/
             Log.d(TAG, "fast forward in service");
 
         }
         if (method.equals(METHOD_RW)) {
-            Toast.makeText(MusicService.this, "RW is clicked", Toast.LENGTH_SHORT).show();
+
             mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 5000);
-            /*int pos= mediaPlayer.getCurrentPosition();
-            SeekbarEvent event= new SeekbarEvent();
-            event.pos= pos;
-            EventBus.getDefault().post(event);*/
             Log.d(TAG, "rewind in service");
         }
-
-
-
         return super.onStartCommand(intent, flags, startId);
     }
 

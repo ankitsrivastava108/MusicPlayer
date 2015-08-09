@@ -4,8 +4,10 @@ package com.khoslalabs.musicplayer.models;
 
 import com.google.gson.annotations.Expose;
 
+import java.io.Serializable;
 
-public class Songname {
+
+public class Songname implements Serializable{
 
     @Expose
     private String href;

@@ -18,6 +18,7 @@ import com.khoslalabs.musicplayer.models.Music;
 import com.khoslalabs.musicplayer.models.MusicApiResponse;
 import com.khoslalabs.musicplayer.network.MusicApi;
 import com.khoslalabs.musicplayer.provider.MusicDatabase;
+import com.khoslalabs.musicplayer.services.MusicService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +66,16 @@ public class SecondFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), MusicBar.class);
-                //intent.putExtra("songname",musicList.get(position).getSongname().getText());
-                //intent.putExtra("artistname",musicList.get(position).getSongname().getText());
+                if(MusicService.mediaPlayer!=null)
+                {
+                    MusicService.mediaPlayer.stop();
+                    MusicService.mediaPlayer= null;
+                }
+                cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME);
                 intent.putExtra("songname","Song Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME)));
                 intent.putExtra("artistname", "Artist Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_AUTHOR)));
                 intent.putExtra("imageurl", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_IMAGE_URL)));
+                intent.putExtra("filename", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_FILENAME)));
                 startActivity(intent);
             }
         });

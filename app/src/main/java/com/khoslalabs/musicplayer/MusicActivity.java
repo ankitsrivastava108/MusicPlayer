@@ -19,8 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.khoslalabs.musicplayer.events.Duration;
+import com.khoslalabs.musicplayer.events.Pauseevent;
 import com.khoslalabs.musicplayer.events.Playevent;
 import com.khoslalabs.musicplayer.events.SeekbarEvent;
+import com.khoslalabs.musicplayer.models.MusicApiResponse;
 import com.khoslalabs.musicplayer.services.MusicService;
 import com.squareup.picasso.Picasso;
 
@@ -37,13 +39,13 @@ public class MusicActivity extends ActionBarActivity {
 
     private ImageButton playbutton;
     private ImageButton pausebutton;
-    //private MediaPlayer mediaPlayer;
     private ImageButton playfast;
     private ImageButton playback;
     private SeekBar seekBar;
     private  int currentpos;
     private  int duration;
     String TAG;
+    //MusicApiResponse musicApiResponse;
 
     MusicHandler musicHandler = new MusicHandler();
 
@@ -72,8 +74,20 @@ public class MusicActivity extends ActionBarActivity {
             seekBar.setMax(MusicService.mediaPlayer.getDuration());
             musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
         }
+
+        if(MusicService.mediaPlayer!=null && MusicService.mediaPlayer.isPlaying())
+        {
+            playbutton.setVisibility(View.INVISIBLE);
+            pausebutton.setVisibility(View.VISIBLE);
+        }
+        else if(MusicService.mediaPlayer!=null)
+        {
+            playbutton.setVisibility(View.VISIBLE);
+            pausebutton.setVisibility(View.INVISIBLE);
+        }
+
         EventBus.getDefault().register(this);
-        pausebutton.setVisibility(View.INVISIBLE);
+
         Log.d(TAG, "On start");
     }
 
@@ -95,19 +109,28 @@ public class MusicActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
 
+
         playbutton = (ImageButton) findViewById(R.id.activity_main_play);
         pausebutton = (ImageButton) findViewById(R.id.activity_main_pause);
-        //mediaPlayer= MediaPlayer.create(this,R.raw.a);
         playfast = (ImageButton) findViewById(R.id.activity_main_fastforward);
         playback = (ImageButton) findViewById(R.id.activity_main_rewind);
         seekBar = (SeekBar) findViewById(R.id.activity_main_seekbar);
-        //mediaPlayer.start();
-
 
         Intent i= getIntent();
+        //For Database
         String songname= i.getStringExtra("songname");
         String artistname= i.getStringExtra("artistname");
         String imageurl= i.getStringExtra("imagename");
+        final String filename= i.getStringExtra("filename");
+        pausebutton.setVisibility(View.INVISIBLE);
+
+        //For API
+       /* musicApiResponse= (MusicApiResponse) i.getSerializableExtra("songlist");
+        int pos= i.getIntExtra("position", 1);
+        String songname= musicApiResponse.getResults().getCollection1().get(pos).getSongname().getText();
+        String artistname= musicApiResponse.getResults().getCollection1().get(pos).getSongname().getText();
+        String imageurl= musicApiResponse.getResults().getCollection1().get(pos).getImageurl().getSrc();
+        */
 
         TextView songtext= (TextView) findViewById(R.id.main_songName);
         songtext.setText(songname);
@@ -153,8 +176,9 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_ff");
+                intent.putExtra("filename", filename);
                 getApplicationContext().startService(intent);
-                //mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()+5000);
+
             }
         });
 
@@ -163,8 +187,10 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_rw");
+                intent.putExtra("filename", filename);
                 getApplicationContext().startService(intent);
-                //mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()-5000);
+                Log.d("jkh", "play");
+
             }
         });
 
@@ -173,14 +199,11 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_play");
+                intent.putExtra("filename", filename);
                 startService(intent);
                 playbutton.setVisibility(View.INVISIBLE);
                 pausebutton.setVisibility(View.VISIBLE);
-/*
-                Toast.makeText(MusicActivity.this, "Play is clicked", Toast.LENGTH_SHORT).show();
-                mediaPlayer.start();*/
-
-            }
+          }
         });
 
         pausebutton.setOnClickListener(new View.OnClickListener() {
@@ -192,9 +215,6 @@ public class MusicActivity extends ActionBarActivity {
                 startService(intent);
                 playbutton.setVisibility(View.VISIBLE);
                 pausebutton.setVisibility(View.INVISIBLE);
-               /* Toast.makeText(MusicActivity.this, "Pause is clicked", Toast.LENGTH_SHORT).show();
-                mediaPlayer.pause();*/
-                //musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
             }
         });
 
@@ -241,26 +261,28 @@ public class MusicActivity extends ActionBarActivity {
     }
 */
 
-    @DebugLog
-    public void onEvent(SeekbarEvent event){
-        currentpos= event.pos;
-        musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
-
-    }
-
+@DebugLog
     public void onEvent(Duration event){
         duration= event.duration;
         seekBar.setMax(duration);
         musicHandler.sendEmptyMessage(MESSAGE_WAKE_UP_AND_SEEK);
 
     }
-
+/*
     public  void  onEvent(Playevent event)
     {
-        playbutton.setVisibility(View.INVISIBLE);
-        pausebutton.setVisibility(View.VISIBLE);
+        Log.d("njg", "play is pressed in main activity");
+       // playbutton.setVisibility(View.INVISIBLE);
+        //pausebutton.setVisibility(View.VISIBLE);
     }
 
+    public  void  onEvent(Pauseevent event)
+    {
+        Log.d("njg", "pause is pressed in main activity");
+        // playbutton.setVisibility(View.INVISIBLE);
+        //pausebutton.setVisibility(View.VISIBLE);
+    }
+*/
     class MusicHandler extends android.os.Handler {
 
         @Override
