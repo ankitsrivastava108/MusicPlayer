@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.khoslalabs.musicplayer.provider.MusicDatabase;
 
@@ -44,6 +45,7 @@ public class ListofMusic extends FragmentActivity {
         public android.support.v4.app.Fragment getItem(int i) {
             switch(i){
                 case 0:
+                    Log.d("Fir", "First Fragment called");
                     return new FirstFragment();
                 case 1:
                     return new SecondFragment();

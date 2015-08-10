@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.khoslalabs.musicplayer.provider.MusicDatabase;
 import com.khoslalabs.musicplayer.services.MusicService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.security.auth.callback.Callback;
@@ -39,8 +41,9 @@ import static android.support.v4.app.ActivityCompat.startActivity;
  * Created by ankitsrivastava on 04/08/15.
  */
 public class FirstFragment extends Fragment {
+    public ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
     private ListView listView;
-    private List<Collection1> musicList = new ArrayList<Collection1>();
+    //private List<Collection1> musicList = new ArrayList<Collection1>();
     private MusicAdapter musicAdapter;
     MusicCursor musicCursorAdaptor;
     MusicDatabase musicDbHelper;
@@ -63,37 +66,63 @@ public class FirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.first_fragment, container, false);
         listView = (ListView) view.findViewById(R.id.fragment_first);
-        musicDbHelper=new MusicDatabase(getActivity());
+
+        final ArrayList<HashMap<String, String>> songsListData = new ArrayList<HashMap<String, String>>();
+
+        SongsManager plm = new SongsManager();
+        // get all songs from sdcard
+        this.songsList = plm.getPlayList();
+
+        // looping through playlist
+        for (int i = 0; i < songsList.size(); i++) {
+            // creating new HashMap
+            HashMap<String, String> song = songsList.get(i);
+            Log.d("dc", "song lists creating");
+            // adding HashList to ArrayList
+            songsListData.add(song);
+        }
+
+        musicAdapter= new MusicAdapter(getActivity(), songsListData);
+        listView.setAdapter(musicAdapter);
+
 
         //For Database
-        musicDb=musicDbHelper.getReadableDatabase();
-        final Cursor cursor=musicDb.query(MusicDatabase.Tables.MUSIC,null,null,null,null,null,null);
-        musicCursorAdaptor=new MusicCursor(getActivity(),cursor);
-        listView.setAdapter(musicCursorAdaptor);
+        //musicDbHelper=new MusicDatabase(getActivity());
+        //musicDb=musicDbHelper.getReadableDatabase();
+        //final Cursor cursor=musicDb.query(MusicDatabase.Tables.MUSIC,null,null,null,null,null,null);
+        //musicCursorAdaptor=new MusicCursor(getActivity(),cursor);
+        //listView.setAdapter(musicCursorAdaptor);
 
 
        //new MusicAsynctask().execute();
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                //Intent intent= new Intent(getActivity(), MusicActivity.class);
                Intent intent= new Intent(getActivity(), MusicBar.class);
-
-               //For API
-               //intent.putExtra("songlist",m);
-               //intent.putExtra("position",position);
-
-               //For Database
                if(MusicService.mediaPlayer!=null)
                {
                    MusicService.mediaPlayer.stop();
                    MusicService.mediaPlayer= null;
                }
-               cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME);
+
+               intent.putExtra("songTitle", songsListData.get(position).get("songTitle"));
+               intent.putExtra("songPath", songsListData.get(position).get("songPath"));
+               intent.putExtra("imageUrl", "http://ndl.mgccw.com/mu3/app/20141029/01/1414525262492/ss/0_small.png");
+
+               //For API
+               //intent.putExtra("songlist",m);
+               //intent.putExtra("position",position);
+
+
+              // For Database
+              /* cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME);
                intent.putExtra("songname","Song Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_NAME)));
                intent.putExtra("artistname", "Artist Name: " + cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_AUTHOR)));
                intent.putExtra("imageurl", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_IMAGE_URL)));
                intent.putExtra("filename", cursor.getString(cursor.getColumnIndex(MusicDatabase.TableMusic.MUSIC_FILENAME)));
+               */
                startActivity(intent);
            }
        });

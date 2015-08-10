@@ -68,11 +68,16 @@ public class MusicBar extends Activity{
         imagepause.setVisibility(View.INVISIBLE);
 
         Intent i= getIntent();
+
+        final  String songname= i.getStringExtra("songTitle");
+        final  String songpath= i.getStringExtra("songPath");
+        final  String imageurl= i.getStringExtra("imageUrl");
+
         //For Database
-        final String songname= i.getStringExtra("songname");
-        final String artistname= i.getStringExtra("artistname");
-        final String imageurl= i.getStringExtra("imageurl");
-        final String filename= i.getStringExtra("filename");
+        //final String songname= i.getStringExtra("songname");
+        //final String artistname= i.getStringExtra("artistname");
+        //final String imageurl= i.getStringExtra("imageurl");
+        //final String filename= i.getStringExtra("filename");
 
 
         //For API
@@ -87,7 +92,7 @@ public class MusicBar extends Activity{
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_play");
-                intent.putExtra("filename", filename);
+                intent.putExtra("songPath", songpath);
                 getApplicationContext().startService(intent);
                 imageplay.setVisibility(View.INVISIBLE);
                 imagepause.setVisibility(View.VISIBLE);
@@ -99,7 +104,7 @@ public class MusicBar extends Activity{
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_pause");
-                intent.putExtra("filename", filename);
+                intent.putExtra("songPath", songpath);
                 getApplicationContext().startService(intent);
                 imagepause.setVisibility(View.INVISIBLE);
                 imageplay.setVisibility(View.VISIBLE);
@@ -111,11 +116,16 @@ public class MusicBar extends Activity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicActivity.class);
+
+                intent.putExtra("songTitle", songname);
+                intent.putExtra("songPath", songpath);
+
                 //For Database
-                intent.putExtra("songname",songname);
+                /*intent.putExtra("songname",songname);
                 intent.putExtra("artistname",artistname);
                 intent.putExtra("imagename", imageurl);
                 intent.putExtra("filename", filename);
+                 */
 
                 //For API
                 //intent.putExtra("songlist", musicApiResponse);

@@ -1,7 +1,10 @@
 package com.khoslalabs.musicplayer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -115,14 +118,22 @@ public class MusicActivity extends ActionBarActivity {
         playfast = (ImageButton) findViewById(R.id.activity_main_fastforward);
         playback = (ImageButton) findViewById(R.id.activity_main_rewind);
         seekBar = (SeekBar) findViewById(R.id.activity_main_seekbar);
+        pausebutton.setVisibility(View.INVISIBLE);
+
 
         Intent i= getIntent();
+        String songname= i.getStringExtra("songTitle");
+        final String songpath= i.getStringExtra("songPath");
+
+
         //For Database
-        String songname= i.getStringExtra("songname");
+        /*String songname= i.getStringExtra("songname");
         String artistname= i.getStringExtra("artistname");
         String imageurl= i.getStringExtra("imagename");
         final String filename= i.getStringExtra("filename");
-        pausebutton.setVisibility(View.INVISIBLE);
+        */
+
+
 
         //For API
        /* musicApiResponse= (MusicApiResponse) i.getSerializableExtra("songlist");
@@ -133,16 +144,66 @@ public class MusicActivity extends ActionBarActivity {
         */
 
         TextView songtext= (TextView) findViewById(R.id.main_songName);
-        songtext.setText(songname);
+
         TextView artisttext= (TextView) findViewById(R.id.main_artistName);
-        artisttext.setText(artistname);
+        TextView albumtext= (TextView) findViewById(R.id.main_albumName);
+
         ImageView imageView= (ImageView) findViewById(R.id.main_image);
 
-        Picasso
-                .with(this)
-                .load(imageurl)
-                .error(R.drawable.ic_launcher)
-                .into(imageView);
+        MediaMetadataRetriever metaRetriver;
+        byte[] art;
+        metaRetriver = new MediaMetadataRetriever();
+        metaRetriver.setDataSource(songpath);
+
+
+
+        try {
+            art = metaRetriver.getEmbeddedPicture();
+
+            if(art!=null) {
+                Bitmap songImage = BitmapFactory.decodeByteArray(art, 0, art.length);
+                imageView.setImageBitmap(songImage);
+                albumtext.setText(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+                artisttext.setText(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
+                String title= metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                if(title!=null) {
+                    songtext.setText(title);
+                }
+                else
+                {
+                   songtext.setText(songname);
+                }
+                //genre.setText(metaRetriver .extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE));
+            }
+            else{
+                Picasso
+                        .with(this)
+                        .load(R.drawable.musicicon)
+                        .error(R.drawable.ic_launcher)
+                        .into(imageView);
+                String title= metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                if(title!=null) {
+                    songtext.setText(title);
+                }
+                else
+                {
+                    songtext.setText(songname);
+                }
+
+
+                albumtext.setText(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+                artisttext.setText(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
+            }
+
+        }
+        catch (Exception e) {
+            Picasso
+                    .with(this)
+                    .load(R.drawable.musicicon)
+                    .error(R.drawable.ic_launcher)
+                    .into(imageView);
+            songtext.setText(songname);
+        }
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -176,7 +237,7 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_ff");
-                intent.putExtra("filename", filename);
+
                 getApplicationContext().startService(intent);
 
             }
@@ -187,7 +248,7 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_rw");
-                intent.putExtra("filename", filename);
+
                 getApplicationContext().startService(intent);
                 Log.d("jkh", "play");
 
@@ -199,7 +260,7 @@ public class MusicActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MusicService.class);
                 intent.putExtra(MusicService.KEY_METHOD, "method_play");
-                intent.putExtra("filename", filename);
+                intent.putExtra("songPath", songpath);
                 startService(intent);
                 playbutton.setVisibility(View.INVISIBLE);
                 pausebutton.setVisibility(View.VISIBLE);
